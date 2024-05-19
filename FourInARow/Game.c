@@ -1,50 +1,17 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+
+#include "Game.h"
+#include "Software.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <Windows.h>
 #include <string.h>
 
-#define HEIGHT 6
-#define WIDTH 7
-#define ERROR -1
-
-
-typedef struct Piece{
-	char* color;
-	int x;
-	int y;
-	char* view;
-}Piece;
-
-
-void ClearConsole();
-void PrintBoard(Piece board[][WIDTH]);
-int GetPos(Piece board[][WIDTH], int* turn);
-int AddPiece(int x, Piece board[][WIDTH], Piece p);
-void FillEmptyBoard(Piece board[][WIDTH]);
-void printASCII();
-int CheckWin(Piece board[][WIDTH],Piece target);
-int Check4(Piece board[][WIDTH], int row, int col, Piece target, int count, int dirX, int dirY);
-int IsVaildCell(int row, int col);
-int Rematch(Piece board[][WIDTH],int* turn);
-int play(Piece board[][WIDTH], int* turn);
-void clear();
-int CheckFull(Piece board[][WIDTH]);
-
-int main() {
-	Piece Board[HEIGHT][WIDTH];
-	int turn;	
-	play(Board,&turn);
-	return 0;
-}
-void ClearConsole() {
-	system("cls");
-}
 
 void PrintBoard(Piece board[][WIDTH]) {
 	for (int i = 0; i < HEIGHT; i++) {
 		for (int j = 0; j < WIDTH; j++) {
-			printf("%s",board[i][j].view);
+			printf("%s", board[i][j].view);
 		}
 		printf("\n");
 	}
@@ -85,18 +52,19 @@ int GetPos(Piece board[][WIDTH], int* turn) {
 		p.color = "White";
 		p.view = str2;
 	}
-	
+
 	int result = AddPiece(x, board, p);
 	if (result == ERROR) {
 		printf("Column is full. Please try again.\n");
 		return 0;
-	}else
+	}
+	else
 		*turn = !*turn;
 
 	ClearConsole();
 	PrintBoard(board);
 	if (CheckWin(board, p)) {
-		printf("%s %s Won!", p.color,p.view);
+		printf("%s %s Won!", p.color, p.view);
 		return 1;
 	}
 	return 0;
@@ -104,18 +72,18 @@ int GetPos(Piece board[][WIDTH], int* turn) {
 
 int AddPiece(int x, Piece board[][WIDTH], Piece p) {
 	for (int i = 0; i < HEIGHT; i++) {
-		if (board[i][x-1].color != "none")
+		if (board[i][x - 1].color != "none")
 			if (i == 0) return ERROR;
 			else {
 				p.y = i;
 				p.x = x - 1;
-				board[i-1][x-1] = p;
+				board[i - 1][x - 1] = p;
 				return 0;
 			}
-		if (i == HEIGHT-1) {
+		if (i == HEIGHT - 1) {
 			p.y = i;
 			p.x = x - 1;
-			board[i][x-1] = p;
+			board[i][x - 1] = p;
 			return 0;
 		}
 	}
@@ -130,12 +98,6 @@ void FillEmptyBoard(Piece board[][WIDTH]) {
 			mt.x = j;
 			board[i][j] = mt;
 		}
-	}
-}
-
-void printASCII() {
-	for (int i = 0; i <= 255; i++) {
-		printf("%d: %c\n", i, i);
 	}
 }
 
@@ -157,8 +119,6 @@ int CheckWin(Piece board[][WIDTH], Piece target) {
 	return 0;
 }
 
-
-
 int IsVaildCell(int row, int col) {
 	return (row >= 0 && col >= 0 && row < HEIGHT && col < WIDTH);
 }
@@ -170,7 +130,8 @@ int Check4(Piece board[][WIDTH], int row, int col, Piece target, int count, int 
 		return 0;
 	return Check4(board, row + dirX, col + dirY, target, count + 1, dirX, dirY);
 }
-int play(Piece board[][WIDTH],int* turn) {
+
+int play(Piece board[][WIDTH], int* turn) {
 	*turn = 0;
 	ClearConsole();
 	FillEmptyBoard(board);
@@ -178,11 +139,11 @@ int play(Piece board[][WIDTH],int* turn) {
 	while (!GetPos(board, turn)) {
 
 	}
-	Rematch(board,turn);
-
+	Rematch(board, turn);
+	return 0;
 }
 
-int Rematch(Piece board[][WIDTH],int* turn) {
+int Rematch(Piece board[][WIDTH], int* turn) {
 	char ch = ' ';
 	clear();
 
@@ -190,11 +151,7 @@ int Rematch(Piece board[][WIDTH],int* turn) {
 	scanf("%c", &ch);
 	if (ch == 'y') play(board, turn);
 	else return 0;
-}
-
-void clear() {
-	int c = 0;
-	while ((c = getchar()) != '\n' && c != EOF);//remove any lingering data in line
+	return 0;
 }
 
 int CheckFull(Piece board[][WIDTH]) {
